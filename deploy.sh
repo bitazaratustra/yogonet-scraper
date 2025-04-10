@@ -25,7 +25,18 @@ gcloud run jobs create ${JOB_NAME} \
   --set-env-vars "BQ_TABLE_ID=yogonet-456319.yogonet_data.articles" \
   --update-secrets=GOOGLE_APPLICATION_CREDENTIALS=scraper-creds:latest \
   --max-retries=3 \
-  --task-timeout=3600s
+  --task-timeout=3600s | \
+
+    gcloud run jobs update  ${JOB_NAME} \
+      --image ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/${IMAGE_NAME}:latest \
+      --region ${REGION} \
+      --memory 4Gi \
+      --cpu=2 \
+      --service-account=scraper-sa@yogonet-456319.iam.gserviceaccount.com \
+      --set-env-vars "BQ_TABLE_ID=yogonet-456319.yogonet_data.articles" \
+      --update-secrets=GOOGLE_APPLICATION_CREDENTIALS=scraper-creds:latest \
+      --max-retries=3 \
+      --task-timeout=3600s
 
 echo "Job creado: ${JOB_NAME}"
 echo "Para ejecutar el job manualmente:"

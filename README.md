@@ -36,3 +36,14 @@ Este proyecto realiza scraping del sitio [Yogonet International](https://www.yog
 ```bash
 git clone https://github.com/tu_usuario/yogonet-scraper.git
 cd yogonet-scraper
+```
+
+### 2 . Deployar el cloud run job
+```bash
+sh ./deploy.sh
+```
+
+### 3. Ejecutar el job
+```bash
+python callback.py
+```
