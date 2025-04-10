@@ -8,18 +8,18 @@ import requests
 from google.auth.transport.requests import Request
 from google.oauth2 import id_token
 import google.cloud.logging
-import google.auth
+from google.oauth2 import service_account
 
 
 # Configurar logging
-client = google.cloud.logging.Client()
-client.setup_logging()
+# client = google.cloud.logging.Client.from_service_account_json('app/creds.json')
+# client.setup_logging()
 logging.basicConfig(level=logging.INFO)
 
 # Configuración
-PROJECT_ID = os.environ.get("PROJECT_ID")
-REGION = os.environ.get("REGION", "us-central1")
-JOB_NAME = os.environ.get("JOB_NAME", "bot-processor")
+PROJECT_ID = "yogonet-456319"
+REGION = "us-west4"
+JOB_NAME="scraper-job"
 AUDIENCE = f"https://{REGION}-run.googleapis.com"
 RUN_JOB_URL = f"{AUDIENCE}/apis/run.googleapis.com/v1/namespaces/{PROJECT_ID}/jobs/{JOB_NAME}:run"
 
@@ -34,8 +34,12 @@ def get_auth_token(audience=None):
         Token de autenticación
     """
     try:
+        credentials = service_account.Credentials.from_service_account_file(
+            "app/creds.json",
+            scopes=["https://www.googleapis.com/auth/cloud-platform"]
+        )
         # Método 1: Usando google.auth.default() - método recomendado para entornos GCP
-        credentials, project_id = google.auth.default(scopes=["https://www.googleapis.com/auth/cloud-platform"])
+        # credentials, project_id = google.auth.default(scopes=["https://www.googleapis.com/auth/cloud-platform"])
         auth_req = Request()
         credentials.refresh(auth_req)
         return credentials.token
